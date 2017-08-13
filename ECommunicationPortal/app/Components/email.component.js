@@ -22,7 +22,6 @@ var EmailComponent = (function () {
         this.indLoading = false;
     }
     EmailComponent.prototype.ngOnInit = function () {
-        console.log("EmailComponent");
         this.emailfrm = this.fb.group({
             MailboxId: [''],
             UserMailBoxId: [''],
@@ -34,30 +33,47 @@ var EmailComponent = (function () {
             StatusId: ['']
         });
         this.LoadUserMailboxes();
-        this.LoadMailboxesUserWise(8);
-        this.GetUserFolderByMailboxes(8);
-        this.GetFilesByFolder(1);
-        //this.LoadFolderWithDetails(8);
     };
     EmailComponent.prototype.LoadUserMailboxes = function () {
         var _this = this;
         this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetAllUserMailboxes")
-            .subscribe(function (UserMailboxes) { _this.UserMailboxes = UserMailboxes; }, function (error) { return _this.msg = error; });
+            .subscribe(function (UserMailboxes) {
+            _this.UserMailboxes = UserMailboxes;
+            if (_this.UserMailboxes.length > 0) {
+                _this.MailboxId = _this.UserMailboxes[0].MailboxId;
+                _this.LoadMailboxesUserWise(_this.UserMailboxes[0].MailboxId);
+            }
+            else {
+                _this.msg = "There isn't any user mailboxes.";
+            }
+        }, function (error) { return _this.msg = error; });
     };
     EmailComponent.prototype.LoadMailboxesUserWise = function (UserMailboxesId) {
         var _this = this;
-        console.log(UserMailboxesId);
         this.UserMailboxesId = UserMailboxesId;
         this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFolderByUserMailbox?UserMailboxId=" + UserMailboxesId)
-            .subscribe(function (Userfolder) { _this.Userfolder = Userfolder; }, function (error) { return _this.msg = error; });
+            .subscribe(function (Userfolder) {
+            _this.Userfolder = Userfolder;
+            if (_this.Userfolder.length > 0) {
+                _this.GetUserFolderByMailboxes(UserMailboxesId);
+            }
+            else {
+                _this.msg = "There isn't any folder.";
+            }
+        }, function (error) { return _this.msg = error; });
     };
     EmailComponent.prototype.LoadFolderWithDetails = function (UserMailboxesId) {
         var _this = this;
         this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFolderWithDetails?UserMailboxId=" + UserMailboxesId)
             .subscribe(function (UserfolderWithDetails) {
             _this.UserfolderWithDetails = UserfolderWithDetails;
-            _this.UsermailboxList = UserfolderWithDetails[0].UsermailboxList;
-            _this.UserFolderList = UserfolderWithDetails[0].UsermailboxList[0].UserFolderList;
+            if (_this.UserfolderWithDetails.length > 0) {
+                _this.UsermailboxList = UserfolderWithDetails[0].UsermailboxList;
+                _this.UserFolderList = UserfolderWithDetails[0].UsermailboxList[0].UserFolderList;
+            }
+            else {
+                _this.msg = "There isn't any details available.";
+            }
         }, function (error) { return _this.msg = error; });
     };
     EmailComponent.prototype.GetUserFolderByMailboxes = function (UserMailboxesId) {
@@ -65,6 +81,12 @@ var EmailComponent = (function () {
         this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + UserMailboxesId)
             .subscribe(function (UserEmailFolderList) {
             _this.UserEmailFolderList = UserEmailFolderList;
+            if (_this.UserEmailFolderList.length > 0) {
+                _this.GetFilesByFolder(_this.UserEmailFolderList[0].FolderId);
+            }
+            else {
+                _this.msg = "There isn't any folder related to this mailbox.";
+            }
         }, function (error) { return _this.msg = error; });
     };
     EmailComponent.prototype.GetFilesByFolder = function (folderId) {
@@ -73,7 +95,6 @@ var EmailComponent = (function () {
         this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFilesByFolder?folderId=" + folderId)
             .subscribe(function (UserfilesDetails) {
             _this.UserfilesDetails = UserfilesDetails;
-            console.log(JSON.stringify(UserfilesDetails));
         }, function (error) { return _this.msg = error; });
     };
     EmailComponent.prototype.MoveFilesToOtherFolder = function (FolderId) {
@@ -82,11 +103,9 @@ var EmailComponent = (function () {
             var files = this.UserfilesDetails.filter(function (x) { return x.IsSelect == true; })[i];
             if (files && files.IsSelect) {
                 this._emailService.post(global_1.Global.BASE_USER_ENDPOINT + "Email/MoveFilesIntoFolder?FolderId=" + FolderId, files).subscribe(function (data) {
-                    _this.msg = "Files moved successfully.";
+                    _this.msg = "File has been moved successfully.";
                     _this.LoadUserMailboxes();
-                    _this.LoadMailboxesUserWise(8);
-                    _this.GetUserFolderByMailboxes(8);
-                    _this.GetFilesByFolder(1);
+                    _this.MailboxId = _this.MailboxId;
                 }, function (error) {
                     _this.msg = error;
                 });
@@ -96,17 +115,18 @@ var EmailComponent = (function () {
             }
         }
     };
+    EmailComponent.prototype.onUsermailboxSelect = function () {
+        this.MailboxId = this.MailboxId;
+        this.LoadMailboxesUserWise(this.MailboxId);
+    };
     EmailComponent.prototype.SetFilesToDisable = function () {
         var _this = this;
         for (var i = 0; i < this.UserfilesDetails.length; i++) {
             var files = this.UserfilesDetails.filter(function (x) { return x.IsSelect == true; })[i];
             if (files && files.IsSelect) {
                 this._emailService.post(global_1.Global.BASE_USER_ENDPOINT + "Email/SetFilesToDisable?FilesId=" + files.FileId, files).subscribe(function (data) {
-                    _this.msg = "Files disabled successfully.";
+                    _this.msg = "File has been disabled successfully.";
                     _this.LoadUserMailboxes();
-                    _this.LoadMailboxesUserWise(8);
-                    _this.GetUserFolderByMailboxes(8);
-                    _this.GetFilesByFolder(1);
                 }, function (error) {
                     _this.msg = error;
                 });
@@ -122,11 +142,8 @@ var EmailComponent = (function () {
             var files = this.UserfilesDetails.filter(function (x) { return x.IsSelect == true; })[i];
             if (files && files.IsSelect) {
                 this._emailService.post(global_1.Global.BASE_USER_ENDPOINT + "Email/SetFilesToEnable?FilesId=" + files.FileId, files).subscribe(function (data) {
-                    _this.msg = "Files enabled successfully.";
+                    _this.msg = "File has been enabled successfully.";
                     _this.LoadUserMailboxes();
-                    _this.LoadMailboxesUserWise(8);
-                    _this.GetUserFolderByMailboxes(8);
-                    _this.GetFilesByFolder(1);
                 }, function (error) {
                     _this.msg = error;
                 });
@@ -144,9 +161,6 @@ var EmailComponent = (function () {
                 this._emailService.delete(global_1.Global.BASE_USER_ENDPOINT + "Email/", files.FileId).subscribe(function (data) {
                     _this.msg = "File has been deleted successfully.";
                     _this.LoadUserMailboxes();
-                    _this.LoadMailboxesUserWise(8);
-                    _this.GetUserFolderByMailboxes(8);
-                    _this.GetFilesByFolder(1);
                 }, function (error) {
                     _this.msg = error;
                 });

@@ -1,11 +1,4 @@
 ﻿
-<div class="main-title margin-top-50">
-    <h1>Email</h1>
-    <div class="border">
-        <div class="border-inner"></div>
-    </div>
-</div>
-
 <div class="container-fluid bg-header">
     <div class="top-10">
         <div class="container">
@@ -13,8 +6,8 @@
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
                     <label></label>
                     <div class="form-group">
-                        <select class="search-fields" name="drpUsermailbox" id="drpUsermailbox">
-                            <option *ngFor="let usermailbox of UserMailboxes" [value]="usermailbox.MailboxId">
+                        <select class="search-fields" name="drpUsermailbox" id="drpUsermailbox" [(ngModel)]="MailboxId" (ngModelChange)="onUsermailboxSelect()">
+                            <option *ngFor="let usermailbox of UserMailboxes" [ngValue]="usermailbox.MailboxId">
                                 {{usermailbox.FullName}}
                             </option>
                         </select>
