@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ECommunicationModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="File">
+    <Key>
+      <PropertyRef Name="FileId" />
+    </Key>
+    <Property Name="FileId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="FileName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+    <Property Name="TypeId" Type="Byte" Nullable="false" />
+    <Property Name="FolderId" Type="Int64" />
+    <Property Name="StatusId" Type="Byte" Nullable="false" />
+    <Property Name="IsValid" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Folder">
+    <Key>
+      <PropertyRef Name="FolderId" />
+    </Key>
+    <Property Name="FolderId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserMailboxId" Type="Int64" />
+    <Property Name="MailboxId" Type="Int64" />
+    <Property Name="TypeId" Type="Byte" Nullable="false" />
+    <Property Name="StatusId" Type="Byte" Nullable="false" />
+    <NavigationProperty Name="Mailbox" Relationship="Self.FK_Folder_Mailbox" FromRole="Folder" ToRole="Mailbox" />
+    <NavigationProperty Name="UserMailbox" Relationship="Self.FK_Folder_UserMailbox" FromRole="Folder" ToRole="UserMailbox" />
+  </EntityType>
+  <EntityType Name="Mailbox">
+    <Key>
+      <PropertyRef Name="MailboxId" />
+    </Key>
+    <Property Name="MailboxId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShortName" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="StatusId" Type="Int32" />
+    <NavigationProperty Name="Folders" Relationship="Self.FK_Folder_Mailbox" FromRole="Mailbox" ToRole="Folder" />
+  </EntityType>
+  <EntityType Name="UserMailbox">
+    <Key>
+      <PropertyRef Name="UserMailboxId" />
+    </Key>
+    <Property Name="UserMailboxId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int64" Nullable="false" />
+    <Property Name="IsMainContact" Type="Boolean" Nullable="false" />
+    <Property Name="IsDefaultMailbox" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Folders" Relationship="Self.FK_Folder_UserMailbox" FromRole="UserMailbox" ToRole="Folder" />
+    <NavigationProperty Name="User" Relationship="Self.FK_UserMailbox_Users" FromRole="UserMailbox" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="UserMailboxes" Relationship="Self.FK_UserMailbox_Users" FromRole="Users" ToRole="UserMailbox" />
+  </EntityType>
+  <Association Name="FK_Folder_Mailbox">
+    <End Role="Mailbox" Type="Self.Mailbox" Multiplicity="0..1" />
+    <End Role="Folder" Type="Self.Folder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Mailbox">
+        <PropertyRef Name="MailboxId" />
+      </Principal>
+      <Dependent Role="Folder">
+        <PropertyRef Name="MailboxId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Folder_UserMailbox">
+    <End Role="UserMailbox" Type="Self.UserMailbox" Multiplicity="0..1" />
+    <End Role="Folder" Type="Self.Folder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserMailbox">
+        <PropertyRef Name="UserMailboxId" />
+      </Principal>
+      <Dependent Role="Folder">
+        <PropertyRef Name="UserMailboxId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserMailbox_Users">
+    <End Role="Users" Type="Self.User" Multiplicity="1" />
+    <End Role="UserMailbox" Type="Self.UserMailbox" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserMailbox">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ECommunicationEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Files" EntityType="Self.File" />
+    <EntitySet Name="Folders" EntityType="Self.Folder" />
+    <EntitySet Name="Mailboxes" EntityType="Self.Mailbox" />
+    <EntitySet Name="UserMailboxes" EntityType="Self.UserMailbox" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <AssociationSet Name="FK_Folder_Mailbox" Association="Self.FK_Folder_Mailbox">
+      <End Role="Mailbox" EntitySet="Mailboxes" />
+      <End Role="Folder" EntitySet="Folders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Folder_UserMailbox" Association="Self.FK_Folder_UserMailbox">
+      <End Role="UserMailbox" EntitySet="UserMailboxes" />
+      <End Role="Folder" EntitySet="Folders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserMailbox_Users" Association="Self.FK_UserMailbox_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserMailbox" EntitySet="UserMailboxes" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
