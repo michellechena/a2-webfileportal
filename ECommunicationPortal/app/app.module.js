@@ -17,6 +17,8 @@ var app_routing_1 = require("./app.routing");
 var email_component_1 = require("./components/email.component");
 var user_component_1 = require("./components/user.component");
 var home_component_1 = require("./components/home.component");
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+//import { ToastModule } from 'ng2-toastr/ng2-toastr';
 var AppModule = (function () {
     function AppModule() {
     }

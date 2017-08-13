@@ -65,14 +65,7 @@ export class UserComponent implements OnInit {
         this.modal.open();
     }
 
-    deleteUser(UserId: number) {
-        //this.dbops = DBOperation.delete;
-        //this.SetControlsState(false);
-        //this.modalTitle = "Confirm to Delete?";
-        //this.modalBtnTitle = "Delete";
-        //this.user = this.users.filter(x => x.UserId == UserId)[0];
-        //this.userFrm.setValue(this.user);
-        //this.modal.open();
+    deleteUser(UserId: number) {       
         this._userService.delete(Global.BASE_USER_ENDPOINT + "User/", UserId).subscribe(
             data => {
                 this.msg = "Data successfully deleted.";
@@ -95,15 +88,9 @@ export class UserComponent implements OnInit {
         switch (this.dbops) {
             case DBOperation.create:
                 this._userService.post(Global.BASE_USER_ENDPOINT + "User/", formData._value).subscribe(
-                    data => {
-                        //if (data.UserId > 0) //Success
-                        //{
+                    data => {                       
                         this.msg = "Data successfully added.";
-                        this.LoadUsers();
-                        //}
-                        //else {
-                        //    this.msg = "There is some issue in saving records, please contact to system administrator!"
-                        //}
+                        this.LoadUsers();                      
                         this.modal.dismiss();
                     },
                     error => {

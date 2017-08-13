@@ -2,13 +2,12 @@
 @Component({
     selector: "ecommunication-app",
     template: `
-                <header class="main-header">
-                    <div class="container">
+                <header class="main-header">                    
                         <nav class="navbar navbar-default">
                             <div class="navbar-header">
                                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navigation" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-                                <a href="#" class="logo large-screen"> <img src="Content/assest/images/emaillogo.png" alt="E-mail Communication"> E-mail Communication </a>
-                                <a href="#" class="logo small-screen"> <img src="Content/assest/images/emaillogo.png" alt="E-mail Communication"> </a>
+                                <a href="#" class="logo large-screen"> <img src="Content/assest/images/emaillogo.png" alt="E-mail Communication"></a>
+                                <a href="#" class="logo small-screen"> <img src="Content/assest/images/emaillogo.png" alt="E-mail Communication"></a>
                             </div>
                             <!-- Collect the nav links, forms, and other content for toggling -->
                             <div class="navbar-collapse collapse" role="navigation" aria-expanded="true" id="app-navigation">
@@ -18,14 +17,12 @@
                                    <li [class.active]="emailClicked"><a [routerLink]="['email']" (click)="setActiveTab('email')">Email Management</a></li>
                                 </ul>
                             </div>                            
-                        </nav>
-                    </div>
+                        </nav>                  
                 </header>               
-               <div>            
+                        
                  <div class='container'>                         
-                    <router-outlet></router-outlet>                    
-                </div>
-             </div>          
+                    <router-outlet></router-outlet>   
+                </div>          
 `
 })
 

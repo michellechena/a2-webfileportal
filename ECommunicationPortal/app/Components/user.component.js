@@ -57,13 +57,6 @@ var UserComponent = (function () {
     };
     UserComponent.prototype.deleteUser = function (UserId) {
         var _this = this;
-        //this.dbops = DBOperation.delete;
-        //this.SetControlsState(false);
-        //this.modalTitle = "Confirm to Delete?";
-        //this.modalBtnTitle = "Delete";
-        //this.user = this.users.filter(x => x.UserId == UserId)[0];
-        //this.userFrm.setValue(this.user);
-        //this.modal.open();
         this._userService.delete(global_1.Global.BASE_USER_ENDPOINT + "User/", UserId).subscribe(function (data) {
             _this.msg = "Data successfully deleted.";
             _this.modal.dismiss();
@@ -81,14 +74,8 @@ var UserComponent = (function () {
         switch (this.dbops) {
             case enum_1.DBOperation.create:
                 this._userService.post(global_1.Global.BASE_USER_ENDPOINT + "User/", formData._value).subscribe(function (data) {
-                    //if (data.UserId > 0) //Success
-                    //{
                     _this.msg = "Data successfully added.";
                     _this.LoadUsers();
-                    //}
-                    //else {
-                    //    this.msg = "There is some issue in saving records, please contact to system administrator!"
-                    //}
                     _this.modal.dismiss();
                 }, function (error) {
                     _this.msg = error;

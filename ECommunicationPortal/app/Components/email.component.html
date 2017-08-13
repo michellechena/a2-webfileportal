@@ -1,184 +1,173 @@
-﻿
-<div class="container-fluid bg-header">
-    <div class="top-10">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-                    <label></label>
-                    <div class="form-group">
-                        <select class="search-fields" name="drpUsermailbox" id="drpUsermailbox" [(ngModel)]="MailboxId" (ngModelChange)="onUsermailboxSelect()">
-                            <option *ngFor="let usermailbox of UserMailboxes" [ngValue]="usermailbox.MailboxId">
-                                {{usermailbox.FullName}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+﻿<div *ngIf="errorMessage" role="alert" class="alert alert-danger alert-dismissible" dismiss-on-timeout="1000">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    {{errorMessage}}
 </div>
-<div class="container-fluid" style="border:1px solid #ddd;">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                <label></label>
-                <div class="form-group">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="search">
-                        <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                    </div>
-                </div>
-            </div>
 
-            <div style="margin-left:28%;padding:22px 0;">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-                        <div class="dropdown">
-                            <button class="btn btn-primary" type="button" (click)="DeleteFiles()">Delete</button>
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                Move
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li *ngFor="let folder of Userfolder"><a href="#" (click)="MoveFilesToOtherFolder(folder.FolderId)">{{folder.FolderName}}</a></li>
-                            </ul>
-                            <button class="btn btn-primary" type="button" (click)="SetFilesToDisable()">Disable</button>
-                            <button class="btn btn-primary" type="button">Notification</button>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input type="text" name="search" class="form-control" placeholder="search">
-                                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <label></label>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-primary">Delete</button>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                    <label></label>
-                    <div class="form-group">
-                        <select class="search-fields" name="drpUserFolder" id="drpUserFolder">
-                            <option *ngFor="let folder of Userfolder" [value]="folder.FolderId">
-                                {{folder.FolderName}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <label></label><div class="form-group"><button type="button" class="btn btn-primary">Disable</button></div>
-                </div>
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <label></label><div class="form-group"><button type="button" class="btn btn-primary">Notification</button></div>
-                </div>
-                <div class="form-group">
-                    <label></label>
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="search">
-                        <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                    </div>
-                </div>-->
+<div *ngIf="successMessage" role="alert" class="alert alert-success alert-dismissible" dismiss-on-timeout="1000">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <span class="glyphicon glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+    <span class="sr-only">Success:</span>
+    {{successMessage}}
+</div>
+<div>
+    <select class="search-fields search-fields-usermailbox" name="drpUsermailbox" id="drpUsermailbox" [(ngModel)]="MailboxId" (ngModelChange)="onUsermailboxSelect()">
+        <option *ngFor="let usermailbox of UserMailboxes" [ngValue]="usermailbox.MailboxId">
+            {{usermailbox.FullName}}
+        </option>
+    </select>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <div class="row margin-top-15">
+        <div>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                <input type="text" name="search" class="form-control" placeholder="search">
+            </div>
+            <div class="clearfix"></div>
+            <div class="margin-top-15">
+                <button title="Add" class="btn btn-primary" (click)="addFolder()">Add</button>
             </div>
         </div>
-
-    </div>
-    <div>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <ul id="E_SidebarPanel" style="width:25%;">
+        <div class="clearfix"></div>
+        <div class="margin-top-15 SidebarPanel">
+            <ul id="E_SidebarPanel">
                 <li *ngFor="let objUserfolder of UserEmailFolderList" (click)="GetFilesByFolder(objUserfolder.FolderId)">
                     <a [class.active]="selectedItem == objUserfolder.FolderId" href="#">
-                        {{objUserfolder.FolderName}}
+                        <span class="span-text-overflow">{{objUserfolder.FolderName}}</span>
                         <div class="clearfix"></div>
                         <div class="display-inline">T:{{objUserfolder.TotalFiles}}</div>
                         <div class="display-inline">A:{{objUserfolder.TotalActiveFiles}}</div>
                         <div class="display-inline">D:{{objUserfolder.TotalDisableFiles}}</div>
                     </a>
+                    <div class="pull-right display-inline" style="margin-top: -45px; margin-right: 10px;">
+                        <button title="Edit" class="btn btn-default" (click)="editFolder(objUserfolder.FolderId)">Edit</button>
+                        <button title="Delete" class="btn btn-danger" (click)="deleteFoler(objUserfolder.FolderId)">Delete</button>
+                    </div>
                 </li>
             </ul>
-            <div id="E_table">
-                <div id="WorkFolderTwo" class='table-responsive' style="display:none;">
-                    <div class="alert alert-info" role="alert" *ngIf="indLoading">
-                        <img src="../../Content/assest/images/loading.gif" width="32" height="32" />
-                    </div>
-                    <div class='table table-striped'>
-                        <div>
-                            <div style="padding:10px 10px 8px 10px;border-bottom: 2px solid #ddd">
-                                <div style="display:inline-table;width: 20px;"><input type="checkbox" /></div>
-                                <div style="display:inline-table;width: 120px;">Name</div>
-                                <div style="display:inline-table;width: 280px;">Link</div>
-                                <div style="display:inline-table;width: 90px;">IsValid</div>
-                                <div style="display:inline-table;">Action</div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div>
-                            <div *ngFor="let objFolder of UserFolderList">
-                                <div *ngFor="let objFile of objFolder.UserFileList" style="background: #f9f9f9;padding: 10px;border-bottom: 1px solid #ddd;">
-                                    <div *ngIf="objFolder.FolderId===objFile.FolderId">
-                                        <div style="display:inline-table;width: 20px;"><input type="checkbox" value="objFile.FileId" /></div>
-                                        <div style="display:inline-table;width: 120px;">{{objFile.FileName}}</div>
-                                        <div style="display:inline-table;width: 280px;">{{objFile.FilePath}} </div>
-                                        <div style="display:inline-table;width: 90px;">{{objFile.IsValid}} </div>
-                                        <div style="display:inline-table;">
-                                            <button title="Edit" class="btn btn-primary">Edit</button>&nbsp;&nbsp;&nbsp;
-                                            <button title="Delete" class="btn btn-danger">Delete</button>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-9 col-md-9 col-xs-9 col-sm-9">
+    <div class="row margin-top-15">
+        <div style="position:absolute;">
+            <div class="dropdown">
+                <button class="btn btn-theme-ecommunication" type="button" (click)="DeleteFiles()">Delete</button>
+                <button class="btn btn-theme-ecommunication dropdown-toggle" type="button" data-toggle="dropdown">
+                    Move
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li *ngFor="let folder of Userfolder"><a href="#" (click)="MoveFilesToOtherFolder(folder.FolderId)">{{folder.FolderName}}</a></li>
+                </ul>
+                <button class="btn btn-theme-ecommunication" type="button" (click)="SetFilesToDisable()">Disable</button>
+                <button class="btn btn-theme-ecommunication" type="button">Notification</button>
+                <button class="btn btn-theme-ecommunication" type="button" (click)="SetFilesToEnable()">Enable All</button>
+            </div>
+            <div class="form-group">
+                <div class="input-group" style="border-top: 1px solid #ddd; padding: 5px;">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                    <input type="text" name="search" class="form-control" placeholder="search">
                 </div>
-                <div class='table-responsive'>
-                    <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../images/loading.gif" width="32" height="32" /> Loading...</div>
-                    <div *ngIf='UserfilesDetails && UserfilesDetails.length==0' class="alert alert-info" role="alert">No record found!</div>
-                    <table class='table table-striped' *ngIf='UserfilesDetails && UserfilesDetails.length'>
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></th>
-                                <th>Name</th>
-                                <th>Link</th>
-                                <th>IsValid</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let userFiles of UserfilesDetails; let i = index">
-                                <td>
-                                    <input type="checkbox" id="chkAll{{userFiles.FileId}}" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" />
-                                </td>
-                                <td>{{userFiles.FileName}}</td>
-                                <td>{{userFiles.FilePath}}</td>
-                                <td>{{userFiles.IsValid}}</td>
-                                <td>
-                                    <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
-                                    <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
-                                </td>
-                                <td>
-                                    <button title="Edit" class="btn btn-primary">Edit</button>
-                                    <button title="Delete" class="btn btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div>
-                    </div>
-                </div>
-                <div *ngIf="msg" role="alert" class="alert alert-info alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span class="sr-only">Error:</span>
-                    {{msg}}
+            </div>
+        </div>
+        <div id="E_table" style="position:absolute;top:105px;">
+            <div class='table-responsive' style="position: fixed; width: 72%;">
+                <div *ngIf='UserfilesDetails && UserfilesDetails.length==0' class="alert alert-info" role="alert">No record found!</div>
+                <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../images/loading.gif" width="32" height="32" /> Loading...</div>
+                <table class='table table-striped' style="border: 1px solid #ddd;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></th>
+                            <th style="width:25%;">Name</th>
+                            <th style="width:40%;">Link</th>
+                            <th style="width:20%;">IsValid</th>
+                            <th style="width:10%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let userFiles of UserfilesDetails; let i = index">
+                            <td>
+                                <input type="checkbox" id="chkAll{{userFiles.FileId}}" style="height:15px;width:15px;" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" />
+                            </td>
+                            <td style="width:25%;">{{userFiles.FileName}}</td>
+                            <td style="width:40%;">{{userFiles.FilePath}}</td>
+                            <td style="width:20%;">{{userFiles.IsValid}}</td>
+                            <td style="width:10%;">
+                                <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
+                                <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<modal #modal>
+    <form novalidate (ngSubmit)="onSubmit(emailFrm)" [formGroup]="emailFrm">
+        <modal-header [show-close]="true">
+            <h4 class="modal-title">{{modalTitle}}</h4>
+        </modal-header>
+        <modal-body>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">Mailboxes</label>
+                        <div>
+                            <select class="search-fields" name="drpAddUsermailbox" id="drpAddUsermailbox" formControlName="MailboxId">
+                                <option *ngFor="let usermailbox of UserMailboxes" [ngValue]="usermailbox.MailboxId">
+                                    {{usermailbox.FullName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">Folder name*</label>
+                        <div>
+                            <input type="text" class="form-control" placeholder="Folder Name" formControlName="FolderName">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">TypeId</label>
+                        <div>
+                            <select class="search-fields form-control" name="drpAddType" id="drpAddType" formControlName="TypeId">
+                                <option value="0">Default</option>
+                                <option value="1">Standard</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">StatusId</label>
+                        <div>
+                            <select class="search-fields form-control" name="drpAddStatus" id="drpAddStatus" formControlName="StatusId">
+                                <option value="1">Active</option>
+                                <option value="2">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <div>
+                <a class="btn btn-default" (click)="modal.dismiss()">Cancel</a>
+                <button type="submit" [disabled]="emailFrm.invalid" class="btn btn-primary">{{modalBtnTitle}}</button>
+            </div>
+        </modal-footer>
+    </form>
+</modal>

@@ -2,28 +2,23 @@
     margin: 0;
 }
 
-#E_SidebarPanel {
-    width: 25%;
-    display: inline-table;
-    position: relative;
-    top: 0;
+#E_table {
+    height: 100%;
 }
 
-#E_table {
-    width: 72%;
-    display: inline-table;
-    position: relative;
-    height: 500px;
-    margin-left: 20px;
+.SidebarPanel {
+    position: fixed;
+    width: 24%;
+    overflow-y: auto;
+    height: 65%;
+    overflow-x: hidden;
 }
 
 #E_SidebarPanel ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    /*width: 25%;*/
     background-color: #f1f1f1;
-    /*position: absolute;*/
     height: auto;
     overflow: auto;
 }
@@ -51,4 +46,147 @@
 
 .dropdown-menu > li > a:hover {
     color: #686868;
+}
+
+.glyphicon-map-marker {
+    position: absolute;
+    z-index: 1000;
+    top: 30%;
+    left: 2%;
+}
+
+.dropdown-menu {
+    height: 198px !important;
+    overflow-y: auto !important;
+}
+
+table {
+    width: 100%;
+}
+
+thead, tbody, tr, td, th {
+    display: block;
+}
+
+    tr:after {
+        content: ' ';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+
+    thead th {
+        height: 40px;
+    }
+
+tbody {
+    height: 360px;
+    overflow-y: auto;
+}
+
+    tbody td, thead th {
+        width: 5%;
+        float: left;
+    }
+
+@media only screen and (min-width: 420px) {
+    tbody {
+        height: 254px;
+    }
+
+    .SidebarPanel {
+        height: 56%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    tbody {
+        height: 300px;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    tbody {
+        height: 384px;
+    }
+
+    .SidebarPanel {
+        height: 62%;
+    }
+}
+
+@media only screen and (min-width: 1280px) {
+    tbody {
+        height: 384px;
+    }
+
+    .SidebarPanel {
+        height: 62%;
+    }
+}
+
+@media only screen and (min-width: 1440px) {
+    tbody {
+        height: 450px;
+    }
+
+    .SidebarPanel {
+        height: 65%;
+    }
+}
+
+@media only screen and (min-width: 1600px) {
+    tbody {
+        height: 550px;
+    }
+
+    .SidebarPanel {
+        height: 70%;
+    }
+}
+
+@media only screen and (min-width: 1700px) {
+    tbody {
+        height: 600px;
+    }
+}
+
+@media only screen and (min-width: 1900px) {
+    tbody {
+        height: 720px;
+    }
+
+    .SidebarPanel {
+        height: 74%;
+    }
+}
+
+
+@media only screen and (min-width: 2100px) {
+    tbody {
+        height: 1026px;
+    }
+
+    .SidebarPanel {
+        height: 80%;
+    }
+}
+
+
+@media only screen and (min-width: 2500px) {
+    tbody {
+        height: 1704px;
+    }
+
+    .SidebarPanel {
+        height: 86%;
+    }
+}
+
+.span-text-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 150px;
+    display: inline-block;
 }
