@@ -15,18 +15,20 @@ import { DBOperation } from '../Shared/enum';
 import { Observable } from 'rxjs/Rx';
 import { Global } from '../Shared/global';
 import { PagerService } from '../Service/pager.service';
-
 @Component({
     templateUrl: 'app/Components/email.component.html',
     styleUrls: ['app/Components/email.component.css'],
     providers: [EmailService, PagerService]
+
 })
 
 export class EmailComponent implements OnInit {
     @ViewChild('modal') modal: ModalComponent;
+    @ViewChild('fileModal') fileModal: ModalComponent;
     UserMailboxes: IUserMailboxes[];
     Userfolder: IUserfolder[];
     folder: IUserfolder;
+    files: IUserfiles;
     UsermailboxList: IUsermailboxList[];
     UserEmailFolderList: IUserEmailFolderList[];
     UserFolderList: IUserFolderList[];
@@ -39,21 +41,31 @@ export class EmailComponent implements OnInit {
     selectedItem: number;
     indLoading: boolean = false;
     emailFrm: FormGroup;
+    emailfilesFrm: FormGroup;
     dbops: DBOperation;
     modalTitle: string;
     modalBtnTitle: string;
     searchUserFolder: string;
+    searchUserFiles: string;
     MailboxId: number;
+    FolderId: number;
     ModelAddUsermailbox: number;
     ModelFoldername: string;
     ModelAddType: number;
     ModelAddStatus: number;
     UpdatedCheckboxValues: IUserSelectedFiles[];
-
+    ModelAddFilesFolder: number;
+    ModelAddFilesFileName: string;
+    ModelAddFilesFilePath: string;
+    ModelAddFilesAddType: number;
+    ModelAddFilesAddStatus: number;
+    ModelAddFilesAddIsValid: boolean;
+    RowsOnPage: number = 10;
     UserfilesDetails: any[];
-    //pagedItems: any[];
     pager: any = {};
     private UserAllfiles: any[];
+    public items: Observable<Array<any>>;
+    private _items: Array<any>;
 
     constructor(private fb: FormBuilder, private _emailService: EmailService, private pagerService: PagerService) {
     }
@@ -65,6 +77,17 @@ export class EmailComponent implements OnInit {
             FolderName: ['', Validators.required],
             TypeId: [''],
             StatusId: ['']
+        });
+
+        this.emailfilesFrm = this.fb.group({
+            FileId: [''],
+            FolderId: [''],
+            FileName: ['', Validators.required],
+            FilePath: [''],
+            TypeId: [''],
+            StatusId: [''],
+            IsValid: [''],
+            IsSelect: false
         });
         this.LoadUserMailboxes();
     }
@@ -122,6 +145,8 @@ export class EmailComponent implements OnInit {
                 if (UserEmailFolderList.length !== undefined) {
                     this.UserEmailFolderList = UserEmailFolderList;
                     if (UserEmailFolderList.length > 0) {
+                        this.FolderId = this.UserEmailFolderList[0].FolderId;
+                        this.searchUserFiles = '';
                         this.GetFilesByFolder(this.UserEmailFolderList[0].FolderId);
                     } else {
                         this.UserfilesDetails = null;
@@ -137,6 +162,7 @@ export class EmailComponent implements OnInit {
         this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + this.UserMailboxesId + "&searchUserFolder=" + this.searchUserFolder)
             .subscribe(UserEmailFolderList => {
                 if (UserEmailFolderList.length !== undefined) {
+                    this.UserEmailFolderList = null;
                     this.UserEmailFolderList = UserEmailFolderList;
                     if (UserEmailFolderList.length > 0) {
                     } else {
@@ -146,13 +172,27 @@ export class EmailComponent implements OnInit {
                 } else {
                     this.errorMessage = "There isn't any folder related to this mailbox.";
                 }
-            },
-            error => this.errorMessage = <any>error);
+            });
+    }
+    SearchUserFilesByFileName() {
+        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFilesByFolder?folderId=" + this.FolderId + "&SearchUserFiles=" + this.searchUserFiles)
+            .subscribe(UserfilesDetails => {
+                if (UserfilesDetails.length !== undefined) {
+                    this.UserfilesDetails = null;
+                    this.UserfilesDetails = UserfilesDetails;
+                    if (UserfilesDetails.length > 0) {
+                    } else {
+                        this.UserfilesDetails = null;
+                        this.errorMessage = "There isn't any folder related to this mailbox.";
+                    }
+                } else {
+                    this.errorMessage = "There isn't any folder related to this mailbox.";
+                }
+            });
     }
     GetFilesByFolder(folderId: number) {
         this.selectedItem = folderId;
-        console.log("call");
-        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFilesByFolder?folderId=" + folderId)
+        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFilesByFolder?folderId=" + folderId + "&SearchUserFiles=" + this.searchUserFiles)
             .subscribe(UserAllfiles => {
                 if (UserAllfiles.length !== undefined) {
                     this.UserAllfiles = UserAllfiles;
@@ -167,9 +207,15 @@ export class EmailComponent implements OnInit {
     }
     setPage(page: number) {
         if (this.UserAllfiles.length !== undefined) {
-            this.pager = this.pagerService.getPager(this.UserAllfiles.length, page);
+            this.pager = this.pagerService.getPager(this.UserAllfiles.length, page, this.RowsOnPage);
             this.UserfilesDetails = this.UserAllfiles.slice(this.pager.startIndex, this.pager.endIndex + 1);
         }
+    }
+
+    SelectPageSize(RowsOnPage: number): void {
+        this.RowsOnPage = RowsOnPage;
+        this.pager = this.pagerService.getPager(this.UserAllfiles.length, 1, RowsOnPage);
+        this.UserfilesDetails = this.UserAllfiles.slice(this.pager.startIndex, this.pager.endIndex + 1);
     }
 
     MoveFilesToOtherFolder(FolderId: number) {
@@ -276,7 +322,7 @@ export class EmailComponent implements OnInit {
         this.modal.open();
     }
 
-    deleteFoler(FolderId: number) {
+    deleteFolder(FolderId: number) {
         this.dbops = DBOperation.delete;
         this.SetControlsState(false);
         this.modalTitle = "Confirm to Delete?";
@@ -334,6 +380,70 @@ export class EmailComponent implements OnInit {
                     }
                 );
                 break;
+        }
+    }
+
+    SetControlsStateForFiles(isEnable: boolean) {
+        isEnable ? this.emailfilesFrm.enable() : this.emailfilesFrm.disable();
+    }
+    addFiles() {
+        this.dbops = DBOperation.create;
+        this.SetControlsStateForFiles(true);
+        this.modalTitle = "Add New Files";
+        this.modalBtnTitle = "Add";
+
+        this.ModelAddFilesFolder = null;
+        this.ModelAddFilesFileName = null;
+        this.ModelAddFilesFilePath = null;
+        this.ModelAddFilesAddType = null;
+        this.ModelAddFilesAddStatus = null;
+        this.ModelAddFilesAddIsValid = false;
+        this.ModelAddFilesFolder = 0;
+        this.ModelAddFilesAddType = 0;
+        this.ModelAddFilesAddStatus = 1;
+        this.fileModal.open();
+    }
+    editFiles(FileId: number) {
+        this.dbops = DBOperation.update;
+        this.SetControlsStateForFiles(true);
+        this.modalTitle = "Edit Files";
+        this.modalBtnTitle = "Update";
+
+        this.files = this.UserAllfiles.filter(x => x.FileId == FileId)[0];
+        this.emailfilesFrm.setValue(this.files);
+        this.fileModal.open();
+    }
+
+
+    onFilebtnSubmit(formData: any) {
+        this.successMessage = "";
+        this.errorMessage = "";
+        switch (this.dbops) {
+            case DBOperation.create:
+                this._emailService.post(Global.BASE_USER_ENDPOINT + "Email/AddFiles", formData._value).subscribe(
+                    data => {
+                        this.successMessage = data;
+                        this.fileModal.dismiss();
+                        this.GetUserFolderByMailboxes();
+                    },
+                    error => {
+                        this.errorMessage = error;
+                    }
+                );
+                break;
+            case DBOperation.update:
+                console.log(formData._value.FolderId, formData._value);
+                this._emailService.post(Global.BASE_USER_ENDPOINT + "Email/UpdateFiles/", formData._value).subscribe(
+                    data => {
+                        this.successMessage = data;
+                        this.fileModal.dismiss();
+                        this.GetFilesByFolder(formData._value.FolderId);
+                    },
+                    error => {
+                        this.errorMessage = error;
+                    }
+                );
+                break;           
         }
     }
 }

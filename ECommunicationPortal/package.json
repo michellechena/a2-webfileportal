@@ -50,10 +50,11 @@
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "ng2-pagination": "^2.0.2",
+    "ng2-search-filter": "^0.3.1",
     "rxjs": "5.4.0",
     "systemjs": "0.19.40",
-    "zone.js": "^0.8.4",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "zone.js": "^0.8.4"
   },
   "devDependencies": {
     "@types/jasmine": "2.5.36",

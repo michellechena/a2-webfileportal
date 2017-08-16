@@ -68,7 +68,7 @@ var UserComponent = (function () {
         if (page < 1 || page > this.pager.totalPages) {
             return;
         }
-        this.pager = this.pagerService.getPager(this.allItems.length, page);
+        this.pager = this.pagerService.getPager(this.allItems.length, page, 7);
         this.pagedItems = this.allItems.slice(this.pager.startIndex, this.pager.endIndex + 1);
     };
     UserComponent.prototype.addUser = function () {

@@ -5,7 +5,7 @@ import { HomeComponent } from './components/home.component';
 import { UserComponent } from './components/user.component';
 import { EmailComponent } from './components/email.component';
 const appRoutes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: '', redirectTo: 'email', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'user', component: UserComponent },
     { path: 'email', component: EmailComponent }

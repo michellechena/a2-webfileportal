@@ -12,9 +12,10 @@ import { EmailComponent } from './components/email.component';
 import { UserComponent } from './components/user.component';
 import { HomeComponent } from './components/home.component';
 
+
 @NgModule({
     imports: [CommonModule, Ng2Bs3ModalModule, BrowserModule, ReactiveFormsModule, FormsModule, HttpModule, routing],
-    declarations: [AppComponent, EmailComponent, UserComponent, HomeComponent, ],   
+    declarations: [AppComponent, EmailComponent, UserComponent, HomeComponent],
     providers: [{ provide: APP_BASE_HREF, useValue: '/' }],
     bootstrap: [AppComponent]
 })

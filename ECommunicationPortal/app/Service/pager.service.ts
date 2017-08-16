@@ -1,13 +1,13 @@
 ﻿import * as _ from 'underscore';
 
 export class PagerService {
-    getPager(totalItems: number, currentPage: number = 1, pageSize: number = 5) {
+    getPager(totalItems: number, currentPage: number = 1, pageSize: number) {
         let totalPages = Math.ceil(totalItems / pageSize);
         let startPage: number = 0, endPage: number = 0;
         if (totalPages <= 10) {
             startPage = 1;
             endPage = totalPages;
-        } else {
+        } else {           
             if (currentPage <= 6) {
                 startPage = 1;
                 endPage = 10;

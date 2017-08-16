@@ -32,7 +32,8 @@
             'rxjs': 'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
             'ng2-bs3-modal': 'npm:/ng2-bs3-modal',
-            'underscore': 'npm:underscore/underscore.js'
+            'underscore': 'npm:underscore/underscore.js',
+            'ng2-search-filter': 'node_modules/ng2-search-filter'
             //'ng2-toastr': 'npm://node_modules/ng2-toastr/bundles/ng2-toastr.min.js' 
         },
         // packages tells the System loader how to load when no filename and/or no extension
@@ -43,7 +44,8 @@
             rxjs: { defaultExtension: 'js' },
             'ng2-bs3-modal': {
                 main: '/bundles/ng2-bs3-modal.js', defaultExtension: 'js'
-            }
+            },
+            'ng2-search-filter': { main: 'dist/index.js' }
             //'ng2-toastr': { main: '/bundles/ng2-toastr.js', defaultExtension: 'js' }
         }
     });

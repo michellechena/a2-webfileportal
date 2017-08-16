@@ -80,7 +80,7 @@ thead, tbody, tr, td, th {
     }
 
 tbody {
-    height: 360px;
+    height: 315px;
     overflow-y: auto;
 }
 
@@ -107,7 +107,7 @@ tbody {
 
 @media only screen and (min-width: 1024px) {
     tbody {
-        height: 376px;
+        height: 315px;
     }
 
     .SidebarPanel {
@@ -117,7 +117,7 @@ tbody {
 
 @media only screen and (min-width: 1280px) {
     tbody {
-        height: 376px;
+        height: 315px;
     }
 
     .SidebarPanel {
@@ -127,7 +127,7 @@ tbody {
 
 @media only screen and (min-width: 1440px) {
     tbody {
-        height: 442px;
+        height: 386px;
     }
 
     .SidebarPanel {
@@ -137,7 +137,7 @@ tbody {
 
 @media only screen and (min-width: 1600px) {
     tbody {
-        height: 542px;
+        height: 532px;
     }
 
     .SidebarPanel {
@@ -147,13 +147,13 @@ tbody {
 
 @media only screen and (min-width: 1700px) {
     tbody {
-        height: 692px;
+        height: 476px;
     }
 }
 
 @media only screen and (min-width: 1900px) {
     tbody {
-        height: 712px;
+        height: 638px;
     }
 
     .SidebarPanel {
@@ -164,7 +164,7 @@ tbody {
 
 @media only screen and (min-width: 2100px) {
     tbody {
-        height: 1018px;
+        height: 850px;
     }
 
     .SidebarPanel {
@@ -175,7 +175,7 @@ tbody {
 
 @media only screen and (min-width: 2500px) {
     tbody {
-        height: 1696px;
+        height: 966px;
     }
 
     .SidebarPanel {
@@ -233,42 +233,18 @@ tbody {
 }
 
 .divTableBody {
-    /*position: fixed;
-    height: 330px;
-    overflow-y: scroll;*/
     display: table-row-group;
 }
 
 .pagination {
-    /*position: fixed;
-    right: 0;
-    bottom: 40px;*/
     position: absolute;
     right: 0;
-    /*bottom: 40px;*/
 }
 
-.wrap {
-    width: 100%;
+.table {
+    margin-bottom: 0 !important;
 }
 
-    .wrap div {
-        width: 100%;
-        table-layout: fixed;
-    }
-
-div .divtr .divtd {
-    padding: 5px;
-    border: 1px solid #eee;
-    word-wrap: break-word;
-}
-
-div.head .divtr .divtd {
-    background: #eee;
-    display: inline-block;
-}
-
-.inner_table {
-    height: 100px;
-    overflow-y: auto;
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+    background-color: #f5f5f5 !important;
 }

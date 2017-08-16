@@ -24,7 +24,7 @@ var AppModule = (function () {
     AppModule = __decorate([
         core_1.NgModule({
             imports: [common_2.CommonModule, ng2_bs3_modal_1.Ng2Bs3ModalModule, platform_browser_1.BrowserModule, forms_1.ReactiveFormsModule, forms_1.FormsModule, http_1.HttpModule, app_routing_1.routing],
-            declarations: [app_component_1.AppComponent, email_component_1.EmailComponent, user_component_1.UserComponent, home_component_1.HomeComponent,],
+            declarations: [app_component_1.AppComponent, email_component_1.EmailComponent, user_component_1.UserComponent, home_component_1.HomeComponent],
             providers: [{ provide: common_1.APP_BASE_HREF, useValue: '/' }],
             bootstrap: [app_component_1.AppComponent]
         })

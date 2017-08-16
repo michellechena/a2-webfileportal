@@ -6,7 +6,6 @@ var PagerService = (function () {
     }
     PagerService.prototype.getPager = function (totalItems, currentPage, pageSize) {
         if (currentPage === void 0) { currentPage = 1; }
-        if (pageSize === void 0) { pageSize = 5; }
         var totalPages = Math.ceil(totalItems / pageSize);
         var startPage = 0, endPage = 0;
         if (totalPages <= 10) {

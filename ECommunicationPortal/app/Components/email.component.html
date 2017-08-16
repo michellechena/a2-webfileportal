@@ -24,7 +24,7 @@
         <div>
             <div class="input-group">
                 <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                <input type="text" name="search" class="form-control" placeholder="search" [(ngModel)]="searchUserFolder" (blur)="SearchUserFolder()"> <!--(keyup)="GetUserFolderByMailboxes()"-->
+                <input type="text" name="search" class="form-control" placeholder="search" [(ngModel)]="searchUserFolder" (keyup)="SearchUserFolder()"> <!--(keyup)="GetUserFolderByMailboxes()"-->
             </div>
             <div class="clearfix"></div>
             <div class="margin-top-15">
@@ -44,7 +44,7 @@
                     </a>
                     <div class="pull-right display-inline" style="margin-top: -45px; margin-right: 10px;" *ngIf="selectedItem == objUserfolder.FolderId">
                         <button title="Edit" class="btn btn-default" (click)="editFolder(objUserfolder.FolderId)"><i class="glyphicon glyphicon-edit"></i></button>
-                        <button title="Delete" class="btn btn-danger" (click)="deleteFoler(objUserfolder.FolderId)"><i class="glyphicon glyphicon-trash"></i></button>
+                        <button title="Delete" class="btn btn-danger" (click)="deleteFolder(objUserfolder.FolderId)"><i class="glyphicon glyphicon-trash"></i></button>
                     </div>
                 </li>
             </ul>
@@ -56,7 +56,7 @@
     <div class="row margin-top-15">
         <div style="position:absolute;">
             <div class="dropdown">
-                <button title="Add" class="btn btn-theme-ecommunication" type="button">Add</button>
+                <button title="Add" class="btn btn-theme-ecommunication" type="button" (click)="addFiles()">Add</button>
                 <button class="btn btn-theme-ecommunication" type="button" (click)="DeleteFiles()">Delete</button>
                 <button class="btn btn-theme-ecommunication dropdown-toggle" type="button" data-toggle="dropdown">
                     Move
@@ -69,46 +69,35 @@
                 <button class="btn btn-theme-ecommunication" type="button">Notification</button>
                 <button class="btn btn-theme-ecommunication" type="button" (click)="SetFilesToEnable()">Enable All</button>
             </div>
-            <div class="form-group">
-                <div class="input-group" style="border-top: 1px solid #ddd; padding: 5px;">
-                    <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                    <input type="text" name="search" class="form-control" placeholder="search">
+            <div style="border-top: 1px solid #ddd; padding: 5px;">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                                <input type="text" name="search" class="form-control" placeholder="search" [(ngModel)]="searchUserFiles" (keyup)="SearchUserFilesByFileName()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <select class="search-fields form-control pull-right" style="width: 20%;" name="drpRowsOnPage" [(ngModel)]="RowsOnPage" id="drpRowsOnPage" (ngModelChange)="SelectPageSize(RowsOnPage)">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="E_table" style="position:absolute;top:105px;">
-            <div class='table-responsive' style="position: fixed; width: 72%;">
+            <div class='table-responsive' style="position: fixed; width: 74%;">
                 <div *ngIf='UserfilesDetails && UserfilesDetails.length==0' class="alert alert-info" role="alert">No record found!</div>
                 <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../images/loading.gif" width="32" height="32" /> Loading...</div>
-                <div class="wrap" *ngIf='UserfilesDetails && UserfilesDetails.length'>
-                    <!--<div class="head">
-                        <div class="divtr">
-                            <div class="divtd" style="width:10%;"><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></div>
-                            <div class="divtd" style="width:20%;">Name</div>
-                            <div class="divtd" style="width:30%;">Link</div>
-                            <div class="divtd" style="width:10%;">IsValid</div>
-                            <div class="divtd" style="width:10%;">Status</div>
-                            <div class="divtd" style="width:10%;">Action</div>
-                        </div>
-                    </div>
-                    <div class="inner_table">
-                        <div>
-                            <div class="divtr" *ngFor="let userFiles of UserfilesDetails; let i = index">
-                                <div class="divtd" style="width:10%;"><input type="checkbox" id="chkAll{{userFiles.FileId}}" style="height:15px;width:15px;" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" /></div>
-                                <div class="divtd" style="width:20%;">{{userFiles.FileName}}</div>
-                                <div class="divtd" style="width:30%;">{{userFiles.FilePath}}</div>
-                                <div class="divtd" style="width:10%;">{{userFiles.IsValid}}</div>
-                                <div class="divtd" style="width:10%;">
-                                    <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
-                                    <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
-                                </div>
-                                <div class="divtd" style="width:10%;"><button title="Edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></button></div>
-                            </div>
-                        </div>
-                    </div>-->
-                    
-                </div>
-                <div class="divTable" style="width: 100%;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
+                <!--<div class="divTable" style="width: 100%;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
                     <div class="divTableHeading">
                         <div class="divTableRow">
                             <div class="divTableCell" style="width:10%;"><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></div>
@@ -127,10 +116,10 @@
                             <div class="divTableCell" style="width:10%;">{{userFiles.IsValid}}</div>
                             <div class="divTableCell" style="width:10%;">
                                 <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
-                                <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
+                                <span *ngIf='userFiles.StatusId == 2' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
                             </div>
                             <div class="divTableCell" style="width:10%;">
-                                <button title="Edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></button>
+                                <button title="Edit" class="btn btn-default" (click)="editFiles(userFiles.FileId)"><i class="glyphicon glyphicon-edit"></i></button>
                             </div>
                         </div>
                     </div>
@@ -153,9 +142,9 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-                <!--<table class='table table-striped' style="border: 1px solid #ddd;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
-                    <thead>
+                </div>-->
+                <table class='table table-striped' *ngIf='UserfilesDetails && UserfilesDetails.length'>
+                    <thead style="border: 1px solid #ddd; border-bottom:0;">
                         <tr>
                             <th><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></th>
                             <th style="width:20%;">Name</th>
@@ -165,7 +154,7 @@
                             <th style="width:10%;">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="border: 1px solid #ddd; border-top:0;">
                         <tr *ngFor="let userFiles of UserfilesDetails; let i = index">
                             <td>
                                 <input type="checkbox" id="chkAll{{userFiles.FileId}}" style="height:15px;width:15px;" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" />
@@ -174,15 +163,34 @@
                             <td style="width:40%;">{{userFiles.FilePath}}</td>
                             <td style="width:15%;">{{userFiles.IsValid}}</td>
                             <td style="width:10%;">
-                                <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
-                                <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
+                                <span *ngIf="userFiles.StatusId == 1" class="label label-success">Active</span>
+                                <span *ngIf="userFiles.StatusId == 2" class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
                             </td>
                             <td style="width:10%;">
-                                <button title="Edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></button>
+                                <button title="Edit" class="btn btn-default" (click)="editFiles(userFiles.FileId)"><i class="glyphicon glyphicon-edit"></i></button>
                             </td>
                         </tr>
                     </tbody>
-                </table>-->
+                </table>
+                <div>
+                    <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                        <li [ngClass]="{disabled:pager.currentPage === 1}">
+                            <a (click)="setPage(1)">First</a>
+                        </li>
+                        <li [ngClass]="{disabled:pager.currentPage === 1}">
+                            <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+                        </li>
+                        <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                            <a (click)="setPage(page)">{{page}}</a>
+                        </li>
+                        <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                            <a (click)="setPage(pager.currentPage + 1)">Next</a>
+                        </li>
+                        <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                            <a (click)="setPage(pager.totalPages)">Last</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -244,6 +252,85 @@
             <div>
                 <a class="btn btn-default" (click)="modal.dismiss()">Cancel</a>
                 <button type="submit" [disabled]="emailFrm.invalid" class="btn btn-primary">{{modalBtnTitle}}</button>
+            </div>
+        </modal-footer>
+    </form>
+</modal>
+
+<modal #fileModal>
+    <form novalidate (ngSubmit)="onFilebtnSubmit(emailfilesFrm)" [formGroup]="emailfilesFrm">
+        <modal-header [show-close]="true">
+            <h4 class="modal-title">{{modalTitle}}</h4>
+        </modal-header>
+        <modal-body>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">Folders</label>
+                        <div>
+                            <select class="search-fields" name="drpAddFilesFolder" id="drpAddFilesFolder" [(ngModel)]="ModelAddFilesFolder" formControlName="FolderId">
+                                <option value="0">-- select --</option>
+                                <option *ngFor="let folder of Userfolder" [ngValue]="folder.FolderId">
+                                    {{folder.FolderName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">File name*</label>
+                        <div>
+                            <input type="text" class="form-control" placeholder="File Name" [(ngModel)]="ModelAddFilesFileName" formControlName="FileName">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">File path*</label>
+                        <div>
+                            <input type="text" class="form-control" placeholder="File Path" [(ngModel)]="ModelAddFilesFilePath" formControlName="FilePath">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">TypeId</label>
+                        <div>
+                            <select class="search-fields form-control" name="drpAddType" [(ngModel)]="ModelAddFilesAddType" id="drpAddType" formControlName="TypeId">
+                                <option value="0">Exact</option>
+                                <option value="1">Container</option>
+                                <option value="2">Pattern</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">StatusId</label>
+                        <div>
+                            <select class="search-fields form-control" name="drpAddStatus" [(ngModel)]="ModelAddFilesAddStatus" id="drpAddStatus" formControlName="StatusId">
+                                <option value="1">Active</option>
+                                <option value="2">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">Is Valid</label>
+                        <div>
+                            <input type="checkbox" id="chkIsValid" style="height:15px;width:15px;" name="chkIsValid" value="ModelAddFilesAddIsValid" formControlName="IsValid" [(ngModel)]="ModelAddFilesAddIsValid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-body>
+        <modal-footer>
+            <div>
+                <a class="btn btn-default" (click)="fileModal.dismiss()">Cancel</a>
+                <button type="submit" [disabled]="emailfilesFrm.invalid" class="btn btn-primary">{{modalBtnTitle}}</button>
             </div>
         </modal-footer>
     </form>

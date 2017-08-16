@@ -359,6 +359,10 @@
     <TypeScriptCompile Include="app\Directives\dropdown-config.ts" />
     <TypeScriptCompile Include="app\Directives\dropdown.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\Service\ng2-filter.module.ts" />
+    <TypeScriptCompile Include="app\Service\ng2-filter.pipe.ts" />
+    <TypeScriptCompile Include="app\Service\ngFilter-export.ts" />
+    <TypeScriptCompile Include="app\Service\search.pipe.ts" />
     <TypeScriptCompile Include="app\Service\pager.service.ts" />
     <TypeScriptCompile Include="app\shared\data-filter.pipe.ts" />
     <TypeScriptCompile Include="app\Models\email.ts" />

@@ -12,9 +12,9 @@
                             <!-- Collect the nav links, forms, and other content for toggling -->
                             <div class="navbar-collapse collapse" role="navigation" aria-expanded="true" id="app-navigation">
                                 <ul class="nav navbar-nav navbar-right">
-                                   <li [class.active]="homeClicked" class='active'><a [routerLink]="['home']" (click)="setActiveTab('home')">Home</a></li>    
-                                   <li><a [routerLink]="['user']">Users Management</a></li> 
-                                   <li [class.active]="emailClicked"><a [routerLink]="['email']" (click)="setActiveTab('email')">Email Management</a></li>
+                                 <!--  <li [class.active]="homeClicked" class='active'><a [routerLink]="['home']" (click)="setActiveTab('home')">Home</a></li>    
+                                   <li><a [routerLink]="['user']">Users Management</a></li> [class.active]="emailClicked"-->
+                                   <li class='active'><a [routerLink]="['email']" (click)="setActiveTab('email')">Home</a></li>
                                 </ul>
                             </div>                            
                         </nav>                  
