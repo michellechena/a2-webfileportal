@@ -1,5 +1,4 @@
-﻿//import { Component } from "@angular/core";
-import { Component, OnInit, ViewChild, EventEmitter } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, EventEmitter, NgModule } from '@angular/core';
 import { EmailService } from '../Service/email.service';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
 import { ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
@@ -15,11 +14,12 @@ import { IUserSelectedFiles } from '../Models/email';
 import { DBOperation } from '../Shared/enum';
 import { Observable } from 'rxjs/Rx';
 import { Global } from '../Shared/global';
+import { PagerService } from '../Service/pager.service';
 
 @Component({
     templateUrl: 'app/Components/email.component.html',
     styleUrls: ['app/Components/email.component.css'],
-    providers: [EmailService]
+    providers: [EmailService, PagerService]
 })
 
 export class EmailComponent implements OnInit {
@@ -32,7 +32,7 @@ export class EmailComponent implements OnInit {
     UserFolderList: IUserFolderList[];
     UserFileList: IUserFileList[];
     UserfolderWithDetails: IUserfolderWithDetails[];
-    UserfilesDetails: IUserfiles[];
+    //UserfilesDetails: IUserfiles[];
     UserMailboxesId: number;
     errorMessage: string;
     successMessage: string;
@@ -42,10 +42,21 @@ export class EmailComponent implements OnInit {
     dbops: DBOperation;
     modalTitle: string;
     modalBtnTitle: string;
+    searchUserFolder: string;
     MailboxId: number;
+    ModelAddUsermailbox: number;
+    ModelFoldername: string;
+    ModelAddType: number;
+    ModelAddStatus: number;
     UpdatedCheckboxValues: IUserSelectedFiles[];
 
-    constructor(private fb: FormBuilder, private _emailService: EmailService) { }
+    UserfilesDetails: any[];
+    //pagedItems: any[];
+    pager: any = {};
+    private UserAllfiles: any[];
+
+    constructor(private fb: FormBuilder, private _emailService: EmailService, private pagerService: PagerService) {
+    }
 
     ngOnInit(): void {
         this.emailFrm = this.fb.group({
@@ -63,7 +74,8 @@ export class EmailComponent implements OnInit {
                 if (UserMailboxes.length !== undefined) {
                     this.UserMailboxes = UserMailboxes;
                     this.MailboxId = this.UserMailboxes[0].MailboxId;
-                    this.LoadMailboxesUserWise(this.UserMailboxes[0].MailboxId);
+                    this.UserMailboxesId = this.UserMailboxes[0].MailboxId;
+                    this.LoadMailboxesUserWise();
                 } else {
                     this.errorMessage = "There isn't any user mailboxes.";
                 }
@@ -71,13 +83,15 @@ export class EmailComponent implements OnInit {
             error => this.errorMessage = <any>error);
     }
 
-    LoadMailboxesUserWise(UserMailboxesId: number): void {
-        this.UserMailboxesId = UserMailboxesId;
-        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFolderByUserMailbox?UserMailboxId=" + UserMailboxesId)
+    LoadMailboxesUserWise(): void {
+        //this.UserMailboxesId = UserMailboxesId;
+        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFolderByUserMailbox?UserMailboxId=" + this.UserMailboxesId)
             .subscribe(Userfolder => {
                 if (Userfolder.length !== undefined) {
                     this.Userfolder = Userfolder;
-                    this.GetUserFolderByMailboxes(UserMailboxesId);
+                    //this.UserMailboxesId = UserMailboxesId;
+                    this.searchUserFolder = '';
+                    this.GetUserFolderByMailboxes();
                 } else {
                     this.errorMessage = "There isn't any folder.";
                 }
@@ -85,8 +99,8 @@ export class EmailComponent implements OnInit {
             error => this.errorMessage = <any>error);
     }
 
-    LoadFolderWithDetails(UserMailboxesId: number): void {
-        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFolderWithDetails?UserMailboxId=" + UserMailboxesId)
+    LoadFolderWithDetails(): void {
+        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFolderWithDetails?UserMailboxId=" + this.UserMailboxesId)
             .subscribe(UserfolderWithDetails => {
                 if (UserfolderWithDetails.length !== undefined) {
                     this.UserfolderWithDetails = UserfolderWithDetails;
@@ -102,8 +116,8 @@ export class EmailComponent implements OnInit {
 
     }
 
-    GetUserFolderByMailboxes(UserMailboxesId: number) {
-        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + UserMailboxesId)
+    GetUserFolderByMailboxes() {
+        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + this.UserMailboxesId + "&searchUserFolder=" + this.searchUserFolder)
             .subscribe(UserEmailFolderList => {
                 if (UserEmailFolderList.length !== undefined) {
                     this.UserEmailFolderList = UserEmailFolderList;
@@ -119,19 +133,45 @@ export class EmailComponent implements OnInit {
             },
             error => this.errorMessage = <any>error);
     }
+    SearchUserFolder() {
+        this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + this.UserMailboxesId + "&searchUserFolder=" + this.searchUserFolder)
+            .subscribe(UserEmailFolderList => {
+                if (UserEmailFolderList.length !== undefined) {
+                    this.UserEmailFolderList = UserEmailFolderList;
+                    if (UserEmailFolderList.length > 0) {
+                    } else {
+                        this.UserfilesDetails = null;
+                        this.errorMessage = "There isn't any folder related to this mailbox.";
+                    }
+                } else {
+                    this.errorMessage = "There isn't any folder related to this mailbox.";
+                }
+            },
+            error => this.errorMessage = <any>error);
+    }
     GetFilesByFolder(folderId: number) {
         this.selectedItem = folderId;
+        console.log("call");
         this._emailService.get(Global.BASE_USER_ENDPOINT + "Email/GetFilesByFolder?folderId=" + folderId)
-            .subscribe(UserfilesDetails => {
-                if (UserfilesDetails.length !== undefined) {
-                    this.UserfilesDetails = UserfilesDetails;
+            .subscribe(UserAllfiles => {
+                if (UserAllfiles.length !== undefined) {
+                    this.UserAllfiles = UserAllfiles;
+                    this.setPage(1);
                 } else {
+                    this.UserAllfiles = null;
                     this.UserfilesDetails = null;
                     this.errorMessage = "There isn't any files related to this mailbox folder.";
                 }
             },
             error => this.errorMessage = <any>error);
     }
+    setPage(page: number) {
+        if (this.UserAllfiles.length !== undefined) {
+            this.pager = this.pagerService.getPager(this.UserAllfiles.length, page);
+            this.UserfilesDetails = this.UserAllfiles.slice(this.pager.startIndex, this.pager.endIndex + 1);
+        }
+    }
+
     MoveFilesToOtherFolder(FolderId: number) {
         var files = this.UserfilesDetails.filter(x => x.IsSelect == true);
         if (files != null) {
@@ -152,7 +192,8 @@ export class EmailComponent implements OnInit {
         this.successMessage = "";
         this.errorMessage = "";
         this.MailboxId = this.MailboxId;
-        this.LoadMailboxesUserWise(this.MailboxId);
+        this.UserMailboxesId = this.MailboxId;
+        this.LoadMailboxesUserWise();
     }
     SetFilesToDisable() {
         var files = this.UserfilesDetails.filter(x => x.IsSelect == true);
@@ -210,10 +251,17 @@ export class EmailComponent implements OnInit {
     }
     addFolder() {
         this.dbops = DBOperation.create;
+        console.log(this.UserMailboxesId);
         this.SetControlsState(true);
         this.modalTitle = "Add New Folder";
         this.modalBtnTitle = "Add";
-        this.emailFrm.reset();
+        this.ModelAddUsermailbox = null;
+        this.ModelFoldername = null;
+        this.ModelAddType = null;
+        this.ModelAddStatus = null;
+        this.ModelAddUsermailbox = this.UserMailboxesId;
+        this.ModelAddType = 1;
+        this.ModelAddStatus = 1;
         this.modal.open();
     }
 
@@ -222,6 +270,7 @@ export class EmailComponent implements OnInit {
         this.SetControlsState(true);
         this.modalTitle = "Edit Folder";
         this.modalBtnTitle = "Update";
+
         this.folder = this.Userfolder.filter(x => x.FolderId == FolderId)[0];
         this.emailFrm.setValue(this.folder);
         this.modal.open();
@@ -234,7 +283,7 @@ export class EmailComponent implements OnInit {
         this.modalBtnTitle = "Delete";
         this.folder = this.Userfolder.filter(x => x.FolderId == FolderId)[0];
         this.emailFrm.setValue(this.folder);
-        this.modal.open();    
+        this.modal.open();
     }
 
     SetControlsState(isEnable: boolean) {
@@ -249,7 +298,8 @@ export class EmailComponent implements OnInit {
                 this._emailService.post(Global.BASE_USER_ENDPOINT + "Email/AddFolder", formData._value).subscribe(
                     data => {
                         this.successMessage = data;
-                        this.LoadUserMailboxes();
+                        //this.LoadUserMailboxes();
+                        this.LoadMailboxesUserWise();
                         this.modal.dismiss();
                     },
                     error => {
@@ -262,7 +312,8 @@ export class EmailComponent implements OnInit {
                 this._emailService.put(Global.BASE_USER_ENDPOINT + "Email/", formData._value.FolderId, formData._value).subscribe(
                     data => {
                         this.successMessage = data;
-                        this.LoadUserMailboxes();
+                        //this.LoadUserMailboxes();
+                        this.LoadMailboxesUserWise();
                         this.modal.dismiss();
                     },
                     error => {
@@ -275,7 +326,8 @@ export class EmailComponent implements OnInit {
                     data => {
                         this.successMessage = data;
                         this.modal.dismiss();
-                        this.LoadUserMailboxes();
+                        //this.LoadUserMailboxes();
+                        this.LoadMailboxesUserWise();
                     },
                     error => {
                         this.errorMessage = error;

@@ -27,11 +27,12 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
             '@angular/animations': 'npm:@angular/animations/bundles/animations.umd.js',
             '@angular/animations/browser': 'npm:@angular/animations/bundles/animations-browser.umd.js',
-            '@angular/platform-browser/animations': 'npm:@angular/platform-browser/bundles/platform-browser-animations.umd.js',   
+            '@angular/platform-browser/animations': 'npm:@angular/platform-browser/bundles/platform-browser-animations.umd.js',
             // other libraries
             'rxjs': 'npm:rxjs',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
             'ng2-bs3-modal': 'npm:/ng2-bs3-modal',
+            'underscore': 'npm:underscore/underscore.js'
             //'ng2-toastr': 'npm://node_modules/ng2-toastr/bundles/ng2-toastr.min.js' 
         },
         // packages tells the System loader how to load when no filename and/or no extension
@@ -40,7 +41,9 @@
                 main: 'main.js', defaultExtension: 'js'
             },
             rxjs: { defaultExtension: 'js' },
-            'ng2-bs3-modal': { main: '/bundles/ng2-bs3-modal.js', defaultExtension: 'js' },
+            'ng2-bs3-modal': {
+                main: '/bundles/ng2-bs3-modal.js', defaultExtension: 'js'
+            }
             //'ng2-toastr': { main: '/bundles/ng2-toastr.js', defaultExtension: 'js' }
         }
     });

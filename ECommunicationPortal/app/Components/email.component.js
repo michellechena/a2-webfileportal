@@ -9,18 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//import { Component } from "@angular/core";
 var core_1 = require("@angular/core");
 var email_service_1 = require("../Service/email.service");
 var forms_1 = require("@angular/forms");
 var ng2_bs3_modal_1 = require("ng2-bs3-modal/ng2-bs3-modal");
 var enum_1 = require("../Shared/enum");
 var global_1 = require("../Shared/global");
+var pager_service_1 = require("../Service/pager.service");
 var EmailComponent = (function () {
-    function EmailComponent(fb, _emailService) {
+    function EmailComponent(fb, _emailService, pagerService) {
         this.fb = fb;
         this._emailService = _emailService;
+        this.pagerService = pagerService;
         this.indLoading = false;
+        //pagedItems: any[];
+        this.pager = {};
     }
     EmailComponent.prototype.ngOnInit = function () {
         this.emailFrm = this.fb.group({
@@ -39,30 +42,33 @@ var EmailComponent = (function () {
             if (UserMailboxes.length !== undefined) {
                 _this.UserMailboxes = UserMailboxes;
                 _this.MailboxId = _this.UserMailboxes[0].MailboxId;
-                _this.LoadMailboxesUserWise(_this.UserMailboxes[0].MailboxId);
+                _this.UserMailboxesId = _this.UserMailboxes[0].MailboxId;
+                _this.LoadMailboxesUserWise();
             }
             else {
                 _this.errorMessage = "There isn't any user mailboxes.";
             }
         }, function (error) { return _this.errorMessage = error; });
     };
-    EmailComponent.prototype.LoadMailboxesUserWise = function (UserMailboxesId) {
+    EmailComponent.prototype.LoadMailboxesUserWise = function () {
         var _this = this;
-        this.UserMailboxesId = UserMailboxesId;
-        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFolderByUserMailbox?UserMailboxId=" + UserMailboxesId)
+        //this.UserMailboxesId = UserMailboxesId;
+        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFolderByUserMailbox?UserMailboxId=" + this.UserMailboxesId)
             .subscribe(function (Userfolder) {
             if (Userfolder.length !== undefined) {
                 _this.Userfolder = Userfolder;
-                _this.GetUserFolderByMailboxes(UserMailboxesId);
+                //this.UserMailboxesId = UserMailboxesId;
+                _this.searchUserFolder = '';
+                _this.GetUserFolderByMailboxes();
             }
             else {
                 _this.errorMessage = "There isn't any folder.";
             }
         }, function (error) { return _this.errorMessage = error; });
     };
-    EmailComponent.prototype.LoadFolderWithDetails = function (UserMailboxesId) {
+    EmailComponent.prototype.LoadFolderWithDetails = function () {
         var _this = this;
-        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFolderWithDetails?UserMailboxId=" + UserMailboxesId)
+        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFolderWithDetails?UserMailboxId=" + this.UserMailboxesId)
             .subscribe(function (UserfolderWithDetails) {
             if (UserfolderWithDetails.length !== undefined) {
                 _this.UserfolderWithDetails = UserfolderWithDetails;
@@ -75,9 +81,9 @@ var EmailComponent = (function () {
             }
         }, function (error) { return _this.errorMessage = error; });
     };
-    EmailComponent.prototype.GetUserFolderByMailboxes = function (UserMailboxesId) {
+    EmailComponent.prototype.GetUserFolderByMailboxes = function () {
         var _this = this;
-        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + UserMailboxesId)
+        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + this.UserMailboxesId + "&searchUserFolder=" + this.searchUserFolder)
             .subscribe(function (UserEmailFolderList) {
             if (UserEmailFolderList.length !== undefined) {
                 _this.UserEmailFolderList = UserEmailFolderList;
@@ -94,19 +100,46 @@ var EmailComponent = (function () {
             }
         }, function (error) { return _this.errorMessage = error; });
     };
+    EmailComponent.prototype.SearchUserFolder = function () {
+        var _this = this;
+        this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetUserFolder?UserMailboxId=" + this.UserMailboxesId + "&searchUserFolder=" + this.searchUserFolder)
+            .subscribe(function (UserEmailFolderList) {
+            if (UserEmailFolderList.length !== undefined) {
+                _this.UserEmailFolderList = UserEmailFolderList;
+                if (UserEmailFolderList.length > 0) {
+                }
+                else {
+                    _this.UserfilesDetails = null;
+                    _this.errorMessage = "There isn't any folder related to this mailbox.";
+                }
+            }
+            else {
+                _this.errorMessage = "There isn't any folder related to this mailbox.";
+            }
+        }, function (error) { return _this.errorMessage = error; });
+    };
     EmailComponent.prototype.GetFilesByFolder = function (folderId) {
         var _this = this;
         this.selectedItem = folderId;
+        console.log("call");
         this._emailService.get(global_1.Global.BASE_USER_ENDPOINT + "Email/GetFilesByFolder?folderId=" + folderId)
-            .subscribe(function (UserfilesDetails) {
-            if (UserfilesDetails.length !== undefined) {
-                _this.UserfilesDetails = UserfilesDetails;
+            .subscribe(function (UserAllfiles) {
+            if (UserAllfiles.length !== undefined) {
+                _this.UserAllfiles = UserAllfiles;
+                _this.setPage(1);
             }
             else {
+                _this.UserAllfiles = null;
                 _this.UserfilesDetails = null;
                 _this.errorMessage = "There isn't any files related to this mailbox folder.";
             }
         }, function (error) { return _this.errorMessage = error; });
+    };
+    EmailComponent.prototype.setPage = function (page) {
+        if (this.UserAllfiles.length !== undefined) {
+            this.pager = this.pagerService.getPager(this.UserAllfiles.length, page);
+            this.UserfilesDetails = this.UserAllfiles.slice(this.pager.startIndex, this.pager.endIndex + 1);
+        }
     };
     EmailComponent.prototype.MoveFilesToOtherFolder = function (FolderId) {
         var _this = this;
@@ -128,7 +161,8 @@ var EmailComponent = (function () {
         this.successMessage = "";
         this.errorMessage = "";
         this.MailboxId = this.MailboxId;
-        this.LoadMailboxesUserWise(this.MailboxId);
+        this.UserMailboxesId = this.MailboxId;
+        this.LoadMailboxesUserWise();
     };
     EmailComponent.prototype.SetFilesToDisable = function () {
         var _this = this;
@@ -183,10 +217,17 @@ var EmailComponent = (function () {
     };
     EmailComponent.prototype.addFolder = function () {
         this.dbops = enum_1.DBOperation.create;
+        console.log(this.UserMailboxesId);
         this.SetControlsState(true);
         this.modalTitle = "Add New Folder";
         this.modalBtnTitle = "Add";
-        this.emailFrm.reset();
+        this.ModelAddUsermailbox = null;
+        this.ModelFoldername = null;
+        this.ModelAddType = null;
+        this.ModelAddStatus = null;
+        this.ModelAddUsermailbox = this.UserMailboxesId;
+        this.ModelAddType = 1;
+        this.ModelAddStatus = 1;
         this.modal.open();
     };
     EmailComponent.prototype.editFolder = function (FolderId) {
@@ -218,7 +259,8 @@ var EmailComponent = (function () {
             case enum_1.DBOperation.create:
                 this._emailService.post(global_1.Global.BASE_USER_ENDPOINT + "Email/AddFolder", formData._value).subscribe(function (data) {
                     _this.successMessage = data;
-                    _this.LoadUserMailboxes();
+                    //this.LoadUserMailboxes();
+                    _this.LoadMailboxesUserWise();
                     _this.modal.dismiss();
                 }, function (error) {
                     _this.errorMessage = error;
@@ -228,7 +270,8 @@ var EmailComponent = (function () {
                 console.log(formData._value.FolderId, formData._value);
                 this._emailService.put(global_1.Global.BASE_USER_ENDPOINT + "Email/", formData._value.FolderId, formData._value).subscribe(function (data) {
                     _this.successMessage = data;
-                    _this.LoadUserMailboxes();
+                    //this.LoadUserMailboxes();
+                    _this.LoadMailboxesUserWise();
                     _this.modal.dismiss();
                 }, function (error) {
                     _this.errorMessage = error;
@@ -238,7 +281,8 @@ var EmailComponent = (function () {
                 this._emailService.delete(global_1.Global.BASE_USER_ENDPOINT + "Email/", formData._value.FolderId).subscribe(function (data) {
                     _this.successMessage = data;
                     _this.modal.dismiss();
-                    _this.LoadUserMailboxes();
+                    //this.LoadUserMailboxes();
+                    _this.LoadMailboxesUserWise();
                 }, function (error) {
                     _this.errorMessage = error;
                 });
@@ -253,9 +297,9 @@ var EmailComponent = (function () {
         core_1.Component({
             templateUrl: 'app/Components/email.component.html',
             styleUrls: ['app/Components/email.component.css'],
-            providers: [email_service_1.EmailService]
+            providers: [email_service_1.EmailService, pager_service_1.PagerService]
         }),
-        __metadata("design:paramtypes", [forms_1.FormBuilder, email_service_1.EmailService])
+        __metadata("design:paramtypes", [forms_1.FormBuilder, email_service_1.EmailService, pager_service_1.PagerService])
     ], EmailComponent);
     return EmailComponent;
 }());

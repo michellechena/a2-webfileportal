@@ -297,6 +297,7 @@
     <Content Include="Content\assest\fonts\linearicons\fonts\Linearicons-Free54e9.woff" />
     <Content Include="Content\assest\fonts\linearicons\fonts\Linearicons-Free54e9.woff2" />
     <Content Include="Content\assest\fonts\linearicons\fonts\Linearicons-Freed41d.eot" />
+    <Content Include="app\shared\data.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -358,6 +359,8 @@
     <TypeScriptCompile Include="app\Directives\dropdown-config.ts" />
     <TypeScriptCompile Include="app\Directives\dropdown.ts" />
     <TypeScriptCompile Include="app\main.ts" />
+    <TypeScriptCompile Include="app\Service\pager.service.ts" />
+    <TypeScriptCompile Include="app\shared\data-filter.pipe.ts" />
     <TypeScriptCompile Include="app\Models\email.ts" />
     <TypeScriptCompile Include="app\Models\user.ts" />
     <TypeScriptCompile Include="app\Service\email.service.ts" />

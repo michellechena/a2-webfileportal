@@ -6,8 +6,80 @@
         <div class='table-responsive'>
             <div style="padding-bottom:10px"><button class="btn btn-primary" (click)="addUser()">Add</button></div>
             <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../Content/assest/images/loading.gif" width="32" height="32" /></div>
-            <div *ngIf='users && users.length==0' class="alert alert-info" role="alert">No record found!</div>
-            <table class='table table-striped' *ngIf='users && users.length'>
+            <div *ngIf='pagedItems && pagedItems.length==0' class="alert alert-info" role="alert">No record found!</div>
+            <!--<div>
+                <div class="col-xs-2">
+                    <label class="label-control">Rows on page</label>
+                    <select class="form-control input-sm" [(ngModel)]="rowsOnPage">
+                        <option [ngValue]="5">5</option>
+                        <option [ngValue]="10">10</option>
+                        <option [ngValue]="15">15</option>
+                    </select>
+                </div>
+                <div class="col-xs-4">
+                    <div class="row">
+                        <label class="col-xs-12 label-control">Sort by</label>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <select class="form-control input-sm" [(ngModel)]="sortBy">
+                                <option ngValue="UserId">User Id</option>
+                                <option ngValue="FirstName">First Name</option>
+                                <option ngValue="LastName">Last Name</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <select class="form-control input-sm" [(ngModel)]="sortOrder">
+                                <option ngValue="asc">Ascending</option>
+                                <option ngValue="desc">Descending</option>
+                                <option ngValue="badValue">Bad value</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+            <div class="divTable" style="width: 100%;" *ngIf='pagedItems && pagedItems.length'>
+                <div class="divTableHeading">
+                    <div class="divTableRow">
+                        <div class="divTableCell">User ID</div>
+                        <div class="divTableCell">First Name</div>
+                        <div class="divTableCell">Last Names</div>
+                        <div class="divTableCell">Action</div>
+                    </div>
+                </div>
+                <div class="divTableBody">
+                    <div class="divTableRow" *ngFor="let user of pagedItems">
+                        <div class="divTableCell">{{user.UserId}}</div>
+                        <div class="divTableCell">{{user.FirstName}}</div>
+                        <div class="divTableCell">{{user.LastName}}</div>
+                        <div class="divTableCell">
+                            <button title="Edit" class="btn btn-primary" (click)="editUser(user.UserId)">Edit</button>&nbsp;
+                            <button title="Delete" class="btn btn-danger" (click)="deleteUser(user.UserId)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                        <a (click)="setPage(1)">First</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === 1}">
+                        <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+                    </li>
+                    <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                        <a (click)="setPage(page)">{{page}}</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                        <a (click)="setPage(pager.currentPage + 1)">Next</a>
+                    </li>
+                    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                        <a (click)="setPage(pager.totalPages)">Last</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!--<table class='table table-striped' *ngIf='users && users.length'>
                 <thead>
                     <tr>
                         <th>User Id</th>
@@ -17,7 +89,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let user of users">
+                    <tr *ngFor="let user of pagedItems">
                         <td>{{user.UserId}}</td>
                         <td>{{user.FirstName}}</td>
                         <td>{{user.LastName}}</td>
@@ -27,9 +99,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
-            <div>
-            </div>
+            </table>-->
         </div>
         <div *ngIf="msg" role="alert" class="alert alert-info alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -66,3 +136,41 @@
         </modal-footer>
     </form>
 </modal>
+
+<style>
+    .divTable {
+        display: table;
+        width: 100%;
+    }
+
+    .divTableRow {
+        display: table-row;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+    }
+
+    .divTableCell, .divTableHead {
+        border: 1px solid #999999;
+        display: table-cell;
+        padding: 3px 10px;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+        font-weight: bold;
+    }
+
+    .divTableFoot {
+        background-color: #EEE;
+        display: table-footer-group;
+        font-weight: bold;
+    }
+
+    .divTableBody {
+        display: table-row-group;
+    }
+</style>

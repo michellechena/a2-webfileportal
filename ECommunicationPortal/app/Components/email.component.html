@@ -1,11 +1,11 @@
-﻿<div *ngIf="errorMessage" role="alert" class="alert alert-danger alert-dismissible" dismiss-on-timeout="1000">
+﻿<div *ngIf="errorMessage" role="alert" class="alert custom-alert alert-danger alert-dismissible" dismiss-on-timeout="1000">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
     <span class="sr-only">Error:</span>
     {{errorMessage}}
 </div>
 
-<div *ngIf="successMessage" role="alert" class="alert alert-success alert-dismissible" dismiss-on-timeout="1000">
+<div *ngIf="successMessage" role="alert" class="alert custom-alert alert-success alert-dismissible" dismiss-on-timeout="1000">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <span class="glyphicon glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
     <span class="sr-only">Success:</span>
@@ -24,11 +24,11 @@
         <div>
             <div class="input-group">
                 <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                <input type="text" name="search" class="form-control" placeholder="search">
+                <input type="text" name="search" class="form-control" placeholder="search" [(ngModel)]="searchUserFolder" (blur)="SearchUserFolder()"> <!--(keyup)="GetUserFolderByMailboxes()"-->
             </div>
             <div class="clearfix"></div>
             <div class="margin-top-15">
-                <button title="Add" class="btn btn-primary" (click)="addFolder()">Add</button>
+                <button title="Add" class="btn btn-primary" (click)="addFolder()"><i class="glyphicon glyphicon-plus"></i></button>
             </div>
         </div>
         <div class="clearfix"></div>
@@ -42,9 +42,9 @@
                         <div class="display-inline">A:{{objUserfolder.TotalActiveFiles}}</div>
                         <div class="display-inline">D:{{objUserfolder.TotalDisableFiles}}</div>
                     </a>
-                    <div class="pull-right display-inline" style="margin-top: -45px; margin-right: 10px;">
-                        <button title="Edit" class="btn btn-default" (click)="editFolder(objUserfolder.FolderId)">Edit</button>
-                        <button title="Delete" class="btn btn-danger" (click)="deleteFoler(objUserfolder.FolderId)">Delete</button>
+                    <div class="pull-right display-inline" style="margin-top: -45px; margin-right: 10px;" *ngIf="selectedItem == objUserfolder.FolderId">
+                        <button title="Edit" class="btn btn-default" (click)="editFolder(objUserfolder.FolderId)"><i class="glyphicon glyphicon-edit"></i></button>
+                        <button title="Delete" class="btn btn-danger" (click)="deleteFoler(objUserfolder.FolderId)"><i class="glyphicon glyphicon-trash"></i></button>
                     </div>
                 </li>
             </ul>
@@ -56,6 +56,7 @@
     <div class="row margin-top-15">
         <div style="position:absolute;">
             <div class="dropdown">
+                <button title="Add" class="btn btn-theme-ecommunication" type="button">Add</button>
                 <button class="btn btn-theme-ecommunication" type="button" (click)="DeleteFiles()">Delete</button>
                 <button class="btn btn-theme-ecommunication dropdown-toggle" type="button" data-toggle="dropdown">
                     Move
@@ -79,14 +80,89 @@
             <div class='table-responsive' style="position: fixed; width: 72%;">
                 <div *ngIf='UserfilesDetails && UserfilesDetails.length==0' class="alert alert-info" role="alert">No record found!</div>
                 <div class="alert alert-info" role="alert" *ngIf="indLoading"><img src="../../images/loading.gif" width="32" height="32" /> Loading...</div>
-                <table class='table table-striped' style="border: 1px solid #ddd;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
+                <div class="wrap" *ngIf='UserfilesDetails && UserfilesDetails.length'>
+                    <!--<div class="head">
+                        <div class="divtr">
+                            <div class="divtd" style="width:10%;"><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></div>
+                            <div class="divtd" style="width:20%;">Name</div>
+                            <div class="divtd" style="width:30%;">Link</div>
+                            <div class="divtd" style="width:10%;">IsValid</div>
+                            <div class="divtd" style="width:10%;">Status</div>
+                            <div class="divtd" style="width:10%;">Action</div>
+                        </div>
+                    </div>
+                    <div class="inner_table">
+                        <div>
+                            <div class="divtr" *ngFor="let userFiles of UserfilesDetails; let i = index">
+                                <div class="divtd" style="width:10%;"><input type="checkbox" id="chkAll{{userFiles.FileId}}" style="height:15px;width:15px;" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" /></div>
+                                <div class="divtd" style="width:20%;">{{userFiles.FileName}}</div>
+                                <div class="divtd" style="width:30%;">{{userFiles.FilePath}}</div>
+                                <div class="divtd" style="width:10%;">{{userFiles.IsValid}}</div>
+                                <div class="divtd" style="width:10%;">
+                                    <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
+                                    <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
+                                </div>
+                                <div class="divtd" style="width:10%;"><button title="Edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></button></div>
+                            </div>
+                        </div>
+                    </div>-->
+                    
+                </div>
+                <div class="divTable" style="width: 100%;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
+                    <div class="divTableHeading">
+                        <div class="divTableRow">
+                            <div class="divTableCell" style="width:10%;"><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></div>
+                            <div class="divTableCell" style="width:20%;">Name</div>
+                            <div class="divTableCell" style="width:30%;">Link</div>
+                            <div class="divTableCell" style="width:10%;">IsValid</div>
+                            <div class="divTableCell" style="width:10%;">Status</div>
+                            <div class="divTableCell" style="width:10%;">Action</div>
+                        </div>
+                    </div>
+                    <div class="divTableBody">
+                        <div class="divTableRow" *ngFor="let userFiles of UserfilesDetails; let i = index">
+                            <div class="divTableCell" style="width:10%;"><input type="checkbox" id="chkAll{{userFiles.FileId}}" style="height:15px;width:15px;" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" /></div>
+                            <div class="divTableCell" style="width:20%;">{{userFiles.FileName}}</div>
+                            <div class="divTableCell" style="width:30%;">{{userFiles.FilePath}}</div>
+                            <div class="divTableCell" style="width:10%;">{{userFiles.IsValid}}</div>
+                            <div class="divTableCell" style="width:10%;">
+                                <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
+                                <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
+                            </div>
+                            <div class="divTableCell" style="width:10%;">
+                                <button title="Edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <ul *ngIf="pager.pages && pager.pages.length" class="pagination">
+                            <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                <a (click)="setPage(1)">First</a>
+                            </li>
+                            <li [ngClass]="{disabled:pager.currentPage === 1}">
+                                <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+                            </li>
+                            <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+                                <a (click)="setPage(page)">{{page}}</a>
+                            </li>
+                            <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                <a (click)="setPage(pager.currentPage + 1)">Next</a>
+                            </li>
+                            <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+                                <a (click)="setPage(pager.totalPages)">Last</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--<table class='table table-striped' style="border: 1px solid #ddd;" *ngIf='UserfilesDetails && UserfilesDetails.length'>
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="chkAll" name="chkAll" [checked]="isAllChecked()" (change)="checkAll($event)" style="height:15px;width:15px;" /></th>
-                            <th style="width:25%;">Name</th>
+                            <th style="width:20%;">Name</th>
                             <th style="width:40%;">Link</th>
-                            <th style="width:20%;">IsValid</th>
+                            <th style="width:15%;">IsValid</th>
                             <th style="width:10%;">Status</th>
+                            <th style="width:10%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -94,18 +170,19 @@
                             <td>
                                 <input type="checkbox" id="chkAll{{userFiles.FileId}}" style="height:15px;width:15px;" name="chkAll{{userFiles.FileId}}" [value]="userFiles.FileId" [(ngModel)]="userFiles.IsSelect" />
                             </td>
-                            <td style="width:25%;">{{userFiles.FileName}}</td>
+                            <td style="width:20%;">{{userFiles.FileName}}</td>
                             <td style="width:40%;">{{userFiles.FilePath}}</td>
-                            <td style="width:20%;">{{userFiles.IsValid}}</td>
+                            <td style="width:15%;">{{userFiles.IsValid}}</td>
                             <td style="width:10%;">
                                 <span *ngIf='userFiles.StatusId == 1' class="label label-success">Active</span>
                                 <span *ngIf='userFiles.StatusId == 0' class="label label-danger" (click)="SetFilesToEnable()"><u>Disabled</u></span>
                             </td>
+                            <td style="width:10%;">
+                                <button title="Edit" class="btn btn-default"><i class="glyphicon glyphicon-edit"></i></button>
+                            </td>
                         </tr>
                     </tbody>
-                </table>
-                <div>
-                </div>
+                </table>-->
             </div>
         </div>
     </div>
@@ -122,7 +199,7 @@
                     <div class="form-group">
                         <label class="control-label">Mailboxes</label>
                         <div>
-                            <select class="search-fields" name="drpAddUsermailbox" id="drpAddUsermailbox" formControlName="MailboxId">
+                            <select class="search-fields" name="drpAddUsermailbox" id="drpAddUsermailbox" [(ngModel)]="ModelAddUsermailbox" formControlName="MailboxId">
                                 <option *ngFor="let usermailbox of UserMailboxes" [ngValue]="usermailbox.MailboxId">
                                     {{usermailbox.FullName}}
                                 </option>
@@ -134,7 +211,7 @@
                     <div class="form-group">
                         <label class="control-label">Folder name*</label>
                         <div>
-                            <input type="text" class="form-control" placeholder="Folder Name" formControlName="FolderName">
+                            <input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="ModelFoldername" formControlName="FolderName">
                         </div>
                     </div>
                 </div>
@@ -142,7 +219,7 @@
                     <div class="form-group">
                         <label class="control-label">TypeId</label>
                         <div>
-                            <select class="search-fields form-control" name="drpAddType" id="drpAddType" formControlName="TypeId">
+                            <select class="search-fields form-control" name="drpAddType" [(ngModel)]="ModelAddType" id="drpAddType" formControlName="TypeId">
                                 <option value="0">Default</option>
                                 <option value="1">Standard</option>
                             </select>
@@ -154,7 +231,7 @@
                     <div class="form-group">
                         <label class="control-label">StatusId</label>
                         <div>
-                            <select class="search-fields form-control" name="drpAddStatus" id="drpAddStatus" formControlName="StatusId">
+                            <select class="search-fields form-control" name="drpAddStatus" [(ngModel)]="ModelAddStatus" id="drpAddStatus" formControlName="StatusId">
                                 <option value="1">Active</option>
                                 <option value="2">Disabled</option>
                             </select>

@@ -18,9 +18,9 @@ input[type=checkbox]:checked + label:before {
     background: #6899d6;
 }
 
-.button-theme:hover {
-    background: #5073c8;
-}
+    .button-theme:hover {
+        background: #5073c8;
+    }
 
 .error404-content h1 {
     color: #d20023
@@ -39,7 +39,7 @@ input[type=checkbox]:checked + label:before {
     border: 2px solid #d20023;
 }
 
-.map-properties-btns .border-button-theme:hover{
+.map-properties-btns .border-button-theme:hover {
     background: #d20023;
     color: #fff !important;
 }
@@ -48,14 +48,14 @@ input[type=checkbox]:checked + label:before {
     background: #364c7d;
 }
 
-.theme-tabs .nav-tabs > li.active > a,
-.theme-tabs .nav-tabs > li > a:hover {
-    color: #364c7d !important;
-}
+    .theme-tabs .nav-tabs > li.active > a,
+    .theme-tabs .nav-tabs > li > a:hover {
+        color: #364c7d !important;
+    }
 
-.theme-tabs .nav-tabs > li > a::after {
-    background: #364c7d;
-}
+    .theme-tabs .nav-tabs > li > a::after {
+        background: #364c7d;
+    }
 
 .theme-tabs .tab-nav > li > a::after {
     background: #d20023 none repeat scroll 0% 0%;
@@ -66,9 +66,9 @@ input[type=checkbox]:checked + label:before {
     border: 2px solid #d20023;
 }
 
-.rightside-navbar li .button:hover {
-    background: #d20023 !important;
-}
+    .rightside-navbar li .button:hover {
+        background: #d20023 !important;
+    }
 
 .banner-detail-box .red-box {
     background: #d20023 url(../../img/slider-detail.png) center center;
@@ -88,13 +88,12 @@ input[type=checkbox]:checked + label:before {
 
 .search-button {
     background: #d20023;
-
 }
 
-.search-button:hover {
-    color: #fff;
-    background: #b70824;
-}
+    .search-button:hover {
+        color: #fff;
+        background: #b70824;
+    }
 
 .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
     color: #d20023;
@@ -104,9 +103,9 @@ input[type=checkbox]:checked + label:before {
     color: #d20023;
 }
 
-.bootstrap-select .dropdown-menu li a:hover {
-    background: #d20023;
-}
+    .bootstrap-select .dropdown-menu li a:hover {
+        background: #d20023;
+    }
 
 .bootstrap-select .dropdown-menu > .active > a,
 .bootstrap-select .dropdown-menu > .active > a:focus,
@@ -116,7 +115,6 @@ input[type=checkbox]:checked + label:before {
 
 .border-inner {
     background: #cd20a9;
-
 }
 
 .tag-f a {
@@ -206,10 +204,10 @@ footer .footer-item .contact-info li label a:hover {
     border: solid 1px #d20023;
 }
 
-.active-view-btn:hover {
-    border: solid 1px #d20023;
-    color: #d20023;
-}
+    .active-view-btn:hover {
+        border: solid 1px #d20023;
+        color: #d20023;
+    }
 
 .listing-properties-box .detail header.title a {
     color: #d20023;
@@ -236,24 +234,31 @@ footer .footer-item .contact-info li label a:hover {
 }
 
 .pagination > li > a {
-    color: #d20023;
+    /*color: #d20023;*/
+    color: #428bca;
     font-weight: 600;
 }
 
-.pagination > li > a:hover {
-    background: #d20023;
-    border-color: #d20023;
-}
+    .pagination > li > a:hover {
+        /*background: #d20023;
+        border-color: #d20023;*/
+        background: #428bca;
+        border-color: #428bca;
+    }
 
 .pagination > .active > a {
-    background: #d20023;
-    border-color: #d20023;
+    /*background: #d20023;
+    border-color: #d20023;*/
+    background: #428bca;
+    border-color: #428bca;
 }
 
-.pagination > .active > a:hover {
-    background: #d20023;
-    border-color: #d20023;
-}
+    .pagination > .active > a:hover {
+        /*background: #d20023;
+        border-color: #d20023;*/
+        background: #428bca;
+        border-color: #428bca;
+    }
 
 .form-content-box .footer span a {
     color: #6899d6;
@@ -341,9 +346,9 @@ footer .footer-item .contact-info li label a:hover {
     color: #d20023;
 }
 
-.agent-box .detail h3::after {
-    background-color: #d20023;
-}
+    .agent-box .detail h3::after {
+        background-color: #d20023;
+    }
 
 .my-account-box p a:hover {
     color: #5073c8;
@@ -428,16 +433,18 @@ footer .footer-item .contact-info li label a:hover {
     background-color: #d20023;
     cursor: pointer;
 }
-.map-marker:hover:before {
-    border-color: #d20023 transparent transparent transparent;
-}
+
+    .map-marker:hover:before {
+        border-color: #d20023 transparent transparent transparent;
+    }
 
 .map-marker.featured:hover {
     background-color: #d20023;
 }
-.map-marker.featured:hover:before {
-    border-color: #d20023 transparent transparent transparent;
-}
+
+    .map-marker.featured:hover:before {
+        border-color: #d20023 transparent transparent transparent;
+    }
 
 .map-marker .icon {
     border: 3px solid #d20023;
@@ -446,19 +453,20 @@ footer .footer-item .contact-info li label a:hover {
 .marker-active .map-marker {
     background-color: #d20023;
 }
-.marker-active .map-marker:before {
-    border-color: #d20023 transparent transparent transparent;
-}
 
-.map-properties .address i{
+    .marker-active .map-marker:before {
+        border-color: #d20023 transparent transparent transparent;
+    }
+
+.map-properties .address i {
     color: #d20023;
 }
 
-.map-properties-btns .border-button-theme{
+.map-properties-btns .border-button-theme {
     color: #d20023 !important;
 }
 
-.map-properties .map-content h4 a{
+.map-properties .map-content h4 a {
     color: #d20023;
 }
 

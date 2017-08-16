@@ -11,21 +11,20 @@ var common_1 = require("@angular/common");
 var platform_browser_1 = require("@angular/platform-browser");
 var forms_1 = require("@angular/forms");
 var app_component_1 = require("./app.component");
+var common_2 = require("@angular/common");
 var ng2_bs3_modal_1 = require("ng2-bs3-modal/ng2-bs3-modal");
 var http_1 = require("@angular/http");
 var app_routing_1 = require("./app.routing");
 var email_component_1 = require("./components/email.component");
 var user_component_1 = require("./components/user.component");
 var home_component_1 = require("./components/home.component");
-//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-//import { ToastModule } from 'ng2-toastr/ng2-toastr';
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
-            imports: [ng2_bs3_modal_1.Ng2Bs3ModalModule, platform_browser_1.BrowserModule, forms_1.ReactiveFormsModule, forms_1.FormsModule, http_1.HttpModule, app_routing_1.routing],
-            declarations: [app_component_1.AppComponent, email_component_1.EmailComponent, user_component_1.UserComponent, home_component_1.HomeComponent],
+            imports: [common_2.CommonModule, ng2_bs3_modal_1.Ng2Bs3ModalModule, platform_browser_1.BrowserModule, forms_1.ReactiveFormsModule, forms_1.FormsModule, http_1.HttpModule, app_routing_1.routing],
+            declarations: [app_component_1.AppComponent, email_component_1.EmailComponent, user_component_1.UserComponent, home_component_1.HomeComponent,],
             providers: [{ provide: common_1.APP_BASE_HREF, useValue: '/' }],
             bootstrap: [app_component_1.AppComponent]
         })
